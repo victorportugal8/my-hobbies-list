@@ -1,21 +1,5 @@
 [
   {
-    "id": "game-01",
-    "title": "Persona 5 Royal",
-    "type": "game",
-    "status": "completed",
-    "rating": 10,
-    "favorite": true,
-    "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7h.jpg",
-    "genres": ["RPG", "Turn-Based", "Social Sim"],
-    "completedAt": "2026-03-10",
-    "reviewQuote": "A interface mais estilosa já feita para um videogame. O ritmo do dia a dia em Tóquio vicia.",
-    "details": {
-      "platform": "PC / PlayStation 5",
-      "developer": "Atlus"
-    }
-  },
-  {
     "id": "anime-01",
     "title": "Sousou no Frieren (Frieren: Beyond Journey's End)",
     "type": "anime",

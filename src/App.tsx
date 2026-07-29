@@ -1,15 +1,21 @@
 import { MediaCard} from './components/MediaCard'
+import type { MediaItem} from './types'
 
 function App() {
   // Simulando o mock JSON
-  const mockData = [
+  const mockData: MediaItem[] = [
     {
       id: "anime-1",
       title: "Sousou no Frieren",
-      type: "anime" as const,
-      status: "completed" as const,
+      type: "anime",
+      status: "completed",
       rating: 5,
-      coverUrl: "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg"
+      coverUrl: "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg",
+      details: {
+        platform: "Crunchyroll",
+        studio: "Madhouse",
+        totalEpisodes: 28
+      }
     },
     {
       id: "book-1",
@@ -17,7 +23,11 @@ function App() {
       type: "book" as const,
       status: "in_progress" as const,
       rating: null, // Testando a lógica de "Sem nota"
-      coverUrl: "https://images-na.ssl-images-amazon.com/images/I/81zN7udGRUL.jpg"
+      coverUrl: "https://images-na.ssl-images-amazon.com/images/I/81zN7udGRUL.jpg",
+      details: {
+        author: "Frank Herbert",
+        totalPages: 412
+      }
     },
     {
       id: "manga-1",
@@ -25,7 +35,11 @@ function App() {
       type: "manga" as const,
       status: "on_hold" as const,
       rating: 5,
-      coverUrl: "https://cdn.myanimelist.net/images/manga/1/259070l.jpg"
+      coverUrl: "https://cdn.myanimelist.net/images/manga/1/259070l.jpg",
+      details: {
+        author: "Takehiko Inoue",
+        totalChapters: 327
+      }
     },
     {
       id: "series-1",
@@ -33,7 +47,11 @@ function App() {
       type: "series" as const,
       status: "planned" as const,
       rating: null,
-      coverUrl: "https://image.tmdb.org/t/p/w500/8csaai0k3uR0V0X6G422y5jHthd.jpg"
+      coverUrl: "https://image.tmdb.org/t/p/w500/8csaai0k3uR0V0X6G422y5jHthd.jpg",
+      details: {
+        platform: "Apple TV+",
+        totalEpisodes: 10
+      }
     }
   ];
 

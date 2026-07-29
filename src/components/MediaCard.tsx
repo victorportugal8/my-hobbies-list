@@ -1,12 +1,12 @@
 import { Star, Tv, Book, BookOpen, Film} from "lucide-react"
+import type { MediaType, MediaStatus } from "../types"
 
-// Tipagem básica das propriedades que o Card vai receber
 interface MediaCardProps {
-  title: string
-  type: 'anime' | 'book' | 'manga' | 'series'
-  status: 'completed' | 'in_progress' | 'on_hold' | 'dropped' | 'planned'
-  rating: number | null
-  coverUrl: string
+  title: string;
+  type: MediaType;
+  status: MediaStatus;
+  rating: number | null;
+  coverUrl: string;
 }
 
 export function MediaCard({ title, type, status, rating, coverUrl }: MediaCardProps) {

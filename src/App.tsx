@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { LayoutGrid, Tv, Book, BookOpen, Film, Search } from 'lucide-react'
 import { MediaCard } from './components/MediaCard'
+import { DetailsModal } from './components/DetailsModal'
 import type { MediaItem, MediaType } from './types'
 
 // Simulando o mock JSON
@@ -56,6 +57,7 @@ import type { MediaItem, MediaType } from './types'
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null)
   //Lógica do filtro
   const filteredData = useMemo(() => {
     return mockData.filter((item) => {
@@ -111,19 +113,34 @@ function App() {
           </div>
         </div>
         {/* Grid responsivo: 2 colunas mobile, 3 tablet, 4 desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredData.map((item) => (
-            <MediaCard 
-              key={item.id}
-              title={item.title}
-              type={item.type}
-              status={item.status}
-              rating={item.rating}
-              coverUrl={item.coverUrl}
-            />
-          ))}
-        </div>
+        {filteredData.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredData.map((item) => (
+              <MediaCard 
+                key={item.id}
+                title={item.title}
+                type={item.type}
+                status={item.status}
+                rating={item.rating}
+                coverUrl={item.coverUrl}
+                onClick={() => setSelectedItem(item)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+            <Search size={48} className="mb-4 opacity-50" />
+            <h2 className="text-xl font-semibold text-slate-300 mb-2">Nenhuma obra encontrada</h2>
+            <p>Tente buscar com outros termos ou mude a aba de categoria.</p>
+          </div>
+        )}
       </div>
+      {selectedItem && (
+        <DetailsModal 
+          item={selectedItem} 
+          onClose={() => setSelectedItem(null)} 
+        />
+      )}
     </div>
   );
 }

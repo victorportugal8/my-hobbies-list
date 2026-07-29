@@ -1,0 +1,83 @@
+[
+  {
+    "id": "game-01",
+    "title": "Persona 5 Royal",
+    "type": "game",
+    "status": "completed",
+    "rating": 10,
+    "favorite": true,
+    "coverUrl": "https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7h.jpg",
+    "genres": ["RPG", "Turn-Based", "Social Sim"],
+    "completedAt": "2026-03-10",
+    "reviewQuote": "A interface mais estilosa já feita para um videogame. O ritmo do dia a dia em Tóquio vicia.",
+    "details": {
+      "platform": "PC / PlayStation 5",
+      "developer": "Atlus"
+    }
+  },
+  {
+    "id": "anime-01",
+    "title": "Sousou no Frieren (Frieren: Beyond Journey's End)",
+    "type": "anime",
+    "status": "completed",
+    "rating": 9.5,
+    "favorite": true,
+    "coverUrl": "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg",
+    "genres": ["Fantasy", "Adventure", "Slice of Life"],
+    "completedAt": "2026-04-12",
+    "reviewQuote": "Uma abordagem fascinante sobre o tempo e o luto depois que a jornada do herói termina.",
+    "details": {
+      "platform": "Crunchyroll",
+      "studio": "Madhouse",
+      "totalEpisodes": 28
+    }
+  },
+  {
+    "id": "book-01",
+    "title": "Duna",
+    "type": "book",
+    "status": "in_progress",
+    "rating": null,
+    "favorite": false,
+    "coverUrl": "https://images-na.ssl-images-amazon.com/images/I/81zN7udGRUL.jpg",
+    "genres": ["Sci-Fi", "Politics", "Adventure"],
+    "completedAt": null,
+    "reviewQuote": "O worldbuilding é denso, mas a intriga política em Arrakis compensa o início lento.",
+    "details": {
+      "author": "Frank Herbert",
+      "totalPages": 680
+    }
+  },
+  {
+    "id": "manga-01",
+    "title": "Vagabond",
+    "type": "manga",
+    "status": "on_hold",
+    "rating": 10,
+    "favorite": true,
+    "coverUrl": "https://cdn.myanimelist.net/images/manga/1/259070l.jpg",
+    "genres": ["Historical", "Action", "Drama", "Seinen"],
+    "completedAt": null,
+    "reviewQuote": "A evolução espiritual e marcial do Musashi é retratada com os painéis mais insanos que já vi.",
+    "details": {
+      "author": "Takehiko Inoue",
+      "totalChapters": 327
+    }
+  },
+  {
+    "id": "series-01",
+    "title": "Ruptura (Severance)",
+    "type": "series",
+    "status": "planned",
+    "rating": null,
+    "favorite": false,
+    "coverUrl": "https://image.tmdb.org/t/p/w500/8csaai0k3uR0V0X6G422y5jHthd.jpg",
+    "genres": ["Sci-Fi", "Thriller", "Mystery"],
+    "completedAt": null,
+    "reviewQuote": "",
+    "details": {
+      "platform": "Apple TV+",
+      "totalEpisodes": 19
+    }
+  }
+]

@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { LayoutGrid, Tv, Book, BookOpen, Film, Search } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
 import type { MediaItem, MediaType } from './types'
@@ -118,26 +119,40 @@ function App() {
         </div>
         {/* Grid responsivo: 2 colunas mobile, 3 tablet, 4 desktop */}
         {filteredData.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredData.map((item) => (
-              <MediaCard 
-                key={item.id}
-                title={item.title}
-                type={item.type}
-                status={item.status}
-                rating={item.rating}
-                coverUrl={item.coverUrl}
-                genres={item.genres}
-                onClick={() => setSelectedItem(item)}
-              />
-            ))}
-          </div>
+          <motion.div layout className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <AnimatePresence mode="popLayout">
+              {filteredData.map((item) => (
+                <motion.div
+                  key={item.id}
+                  layout // Permite que o card deslize para a nova posição
+                  initial={{ opacity: 0, scale: 0.8 }} // Como ele nasce
+                  animate={{ opacity: 1, scale: 1 }}   // Como ele fica na tela
+                  exit={{ opacity: 0, scale: 0.8 }}    // Como ele morre
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                >
+                  <MediaCard 
+                    title={item.title}
+                    type={item.type}
+                    status={item.status}
+                    rating={item.rating}
+                    coverUrl={item.coverUrl}
+                    genres={item.genres}
+                    onClick={() => setSelectedItem(item)}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-20 text-slate-500"
+          >
             <Search size={48} className="mb-4 opacity-50" />
             <h2 className="text-xl font-semibold text-slate-300 mb-2">Nenhuma obra encontrada</h2>
             <p>Tente buscar com outros termos ou mude a aba de categoria.</p>
-          </div>
+          </motion.div>
         )}
       </div>
       {selectedItem && (

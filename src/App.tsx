@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react'
-import { LayoutGrid, Tv, Book, BookOpen, Film, Search } from 'lucide-react'
+import { useState, useEffect, useMemo } from 'react'
+import { LayoutGrid, Tv, Book, BookOpen, Film, Search, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
 import { Dashboard } from './components/Dashboard'
-import { mockData } from './data/mockData'
 import type { MediaItem, MediaType } from './types'
+import { supabase } from './lib/supabase'
 
 //Configuração das abas de filtro
 const TABS = [
@@ -24,10 +24,35 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null)
   // Estado da ordenação (Padrão: A-Z)
   const [sortBy, setSortBy] = useState<SortOption>('title-asc')
+  // Estados dos Dados
+  const [items, setItems] = useState<MediaItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  // Busca os dados na nuvem
+  useEffect(() => {
+    async function fetchMedias() {
+      try {
+        // Pede para o Supabase trazer tudo da tabela 'medias'
+        const { data, error } = await supabase
+          .from('medias')
+          .select('*')
+
+        if (error) throw error
+        
+        // Se deu certo, salva no estado (forçando o tipo para o TypeScript não reclamar)
+        if (data) setItems(data as MediaItem[])
+      } catch (error) {
+        console.error("Erro ao buscar dados do Supabase:", error)
+      } finally {
+        setIsLoading(false) // Tira a tela de carregamento, dando erro ou não
+      }
+    }
+    fetchMedias()
+  }, [])
+
   // Lógica de Filtragem e Ordenação
   const filteredData = useMemo(() => {
     // Filtrando as abas e a busca
-    const result = mockData.filter((item) => {
+    const result = items.filter((item) => {
       const matchesTab = activeTab === 'all' || item.type === activeTab;
       const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesTab && matchesSearch;
@@ -51,7 +76,17 @@ function App() {
     });
 
     return result
-  }, [activeTab, searchQuery, sortBy])
+  }, [activeTab, searchQuery, sortBy, items])
+
+  // Tela de Carregamento
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-400 gap-4">
+        <Loader2 size={40} className="animate-spin text-blue-500" />
+        <p className="text-lg font-medium">Conectando ao banco de dados...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-8">
@@ -62,7 +97,7 @@ function App() {
           <p className="text-slate-400 mt-2">Meu catálogo pessoal de mídias.</p>
         </header>
         {/* Dashboard de Estatísticas */}
-        <Dashboard items={mockData} />
+        <Dashboard items={items} />
         {/* Barra de pesquisa */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
         {/* Navegação de Abas */}

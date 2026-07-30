@@ -155,12 +155,15 @@ function App() {
           </motion.div>
         )}
       </div>
-      {selectedItem && (
-        <DetailsModal 
-          item={selectedItem} 
-          onClose={() => setSelectedItem(null)} 
-        />
-      )}
+      {/* Envolvendo o modal no AnimatePresence */}
+      <AnimatePresence>
+        {selectedItem && (
+          <DetailsModal 
+            item={selectedItem} 
+            onClose={() => setSelectedItem(null)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

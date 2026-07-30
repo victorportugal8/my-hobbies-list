@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { motion } from 'framer-motion'
 import type { MediaItem } from '../types'
 
 interface DetailsModalProps {
@@ -45,19 +46,26 @@ export function DetailsModal({ item, onClose }: DetailsModalProps) {
         }
     }
     return (
-        // Fundo desfocado (Backdrop)
-        <div 
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+        // Fundo escuro animado (fade in/out)
+        <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
         onClick={onClose}
         >
-            {/* Caixa do Modal */}
-            <div 
-                className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-200"
+            {/* Caixa do Modal animada (efeito de mola/zoom) */}
+            <motion.div 
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+                className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
                 onClick={handleModalClick}
             >
                 {/* Capa Lateral */}
                 <div className="md:w-2/5 h-64 md:h-auto bg-slate-800">
-                <img src={item.coverUrl} alt={item.title} className="w-full h-full object-cover" />
+                    <img src={item.coverUrl} alt={item.title} className="w-full h-full object-cover" />
                 </div>
 
                 {/* Conteúdo */}
@@ -90,7 +98,7 @@ export function DetailsModal({ item, onClose }: DetailsModalProps) {
                         {renderSpecificDetails()}
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     )
 }

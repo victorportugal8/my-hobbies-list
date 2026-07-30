@@ -4,62 +4,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
 import { Dashboard } from './components/Dashboard'
+import { mockData } from './data/mockData'
 import type { MediaItem, MediaType } from './types'
 
-// Simulando o mock JSON
-  const mockData: MediaItem[] = [
-    {
-    id: "anime-1",
-    title: "Sousou no Frieren",
-    type: "anime",
-    status: "completed",
-    rating: 5,
-    coverUrl: "https://cdn.myanimelist.net/images/anime/1015/138006l.jpg",
-    genres: ["Fantasia", "Aventura", "Slice of Life"],
-    details: { platform: "Crunchyroll", studio: "Madhouse", totalEpisodes: 28 }
-    },
-    {
-      id: "book-1",
-      title: "Duna",
-      type: "book",
-      status: "in_progress",
-      rating: null,
-      coverUrl: "https://images-na.ssl-images-amazon.com/images/I/81zN7udGRUL.jpg",
-      genres: ["Sci-Fi", "Política"],
-      details: { author: "Frank Herbert", totalPages: 680 }
-    },
-    {
-      id: "manga-1",
-      title: "Vagabond",
-      type: "manga",
-      status: "on_hold",
-      rating: 5,
-      coverUrl: "https://cdn.myanimelist.net/images/manga/1/259070l.jpg",
-      genres: ["Histórico", "Ação", "Drama"],
-      details: { author: "Takehiko Inoue", totalChapters: 327 }
-    },
-    {
-      id: "series-1",
-      title: "Ruptura (Severance)",
-      type: "series",
-      status: "planned",
-      rating: null,
-      coverUrl: "https://image.tmdb.org/t/p/w500/8csaai0k3uR0V0X6G422y5jHthd.jpg",
-      genres: ["Thriller", "Mistério"],
-      details: { platform: "Apple TV+", totalEpisodes: 19 }
-    }
-  ]
-
-  //Configuração das abas de filtro
-  const TABS = [
-    { id: 'all', label: 'Todos', icon: LayoutGrid },
-    { id: 'anime', label: 'Animes', icon: Tv },
-    { id: 'book', label: 'Livros', icon: Book },
-    { id: 'manga', label: 'Mangás', icon: BookOpen },
-    { id: 'series', label: 'Séries', icon: Film },
-  ] as const
-  type TabType = MediaType | 'all'
-  type SortOption = 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'
+//Configuração das abas de filtro
+const TABS = [
+  { id: 'all', label: 'Todos', icon: LayoutGrid },
+  { id: 'anime', label: 'Animes', icon: Tv },
+  { id: 'book', label: 'Livros', icon: Book },
+  { id: 'manga', label: 'Mangás', icon: BookOpen },
+  { id: 'series', label: 'Séries', icon: Film },
+] as const
+type TabType = MediaType | 'all'
+type SortOption = 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('all')

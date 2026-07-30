@@ -1,13 +1,14 @@
-import { X } from 'lucide-react'
+import { X, Edit2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { MediaItem } from '../types'
 
 interface DetailsModalProps {
   item: MediaItem
   onClose: () => void
+  onEdit?: () => void
 }
 
-export function DetailsModal({ item, onClose }: DetailsModalProps) {
+export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
     // Impede que o clique dentro do modal feche ele (event bubbling)
     const handleModalClick = (e: React.MouseEvent) => e.stopPropagation()
 
@@ -99,6 +100,17 @@ export function DetailsModal({ item, onClose }: DetailsModalProps) {
                     </div>
                 </div>
             </motion.div>
+            {/* BLOCO DE BOTÕES SUPERIORES */}
+            <div className="absolute top-4 right-4 flex gap-2 z-10">
+            {onEdit && (
+                <button onClick={onEdit} className="text-slate-400 hover:text-white bg-slate-800/80 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg">
+                <Edit2 size={20} />
+                </button>
+            )}
+            <button onClick={onClose} className="text-slate-400 hover:text-white bg-slate-800/80 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg">
+                <X size={20} />
+            </button>
+            </div>
         </motion.div>
     )
 }

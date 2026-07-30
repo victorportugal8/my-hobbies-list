@@ -8,6 +8,7 @@ import type { MediaItem, MediaType } from './types'
 import { supabase } from './lib/supabase'
 import { AddMediaModal } from './components/AddMediaModal'
 import { LoginModal } from './components/LoginModal'
+import { EditMediaModal } from './components/EditMediaModal'
 import type { Session } from '@supabase/supabase-js'
 
 //Configuração das abas de filtro
@@ -33,6 +34,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [session, setSession] = useState<Session | null>(null)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   // Busca os dados na nuvem
   useEffect(() => {
     async function fetchMedias() {
@@ -241,7 +243,8 @@ function App() {
         {selectedItem && (
           <DetailsModal 
             item={selectedItem} 
-            onClose={() => setSelectedItem(null)} 
+            onClose={() => setSelectedItem(null)}
+            onEdit={session ? () => setIsEditModalOpen(true) : undefined}
           />
         )}
         {isAddModalOpen && session && (
@@ -250,6 +253,28 @@ function App() {
             onSuccess={(newItem) => {
               // Adiciona o item novo no início do estado local sem precisar recarregar a página
               setItems(prevItems => [newItem, ...prevItems])
+            }}
+          />
+        )}
+        {/* Modal de Edição */}
+        {isEditModalOpen && selectedItem && session && (
+          <EditMediaModal 
+            item={selectedItem}
+            onClose={() => setIsEditModalOpen(false)}
+            onSuccess={(updatedItem, action) => {
+              if (action === 'delete') {
+                // Remove da lista
+                setItems(prev => prev.filter(i => i.id !== updatedItem.id));
+                // Fecha o modal de detalhes também
+                setSelectedItem(null);
+              } else {
+                // Atualiza o item na lista
+                setItems(prev => prev.map(i => i.id === updatedItem.id ? updatedItem : i));
+                // Atualiza os dados refletidos no modal de detalhes que está por trás
+                setSelectedItem(updatedItem);
+              }
+              // Fecha o modal de edição
+              setIsEditModalOpen(false);
             }}
           />
         )}

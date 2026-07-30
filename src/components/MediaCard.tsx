@@ -1,39 +1,38 @@
-import { Star, Tv, Book, BookOpen, Film } from 'lucide-react';
-import type { MediaType, MediaStatus } from '../types';
+import { Star, Tv, Book, BookOpen, Film } from 'lucide-react'
+import type { MediaType, MediaStatus } from '../types'
 
 interface MediaCardProps {
-  title: string;
-  type: MediaType;
-  status: MediaStatus;
-  rating: number | null;
-  coverUrl: string;
-  onClick: () => void;
+  title: string
+  type: MediaType
+  status: MediaStatus
+  rating: number | null
+  coverUrl: string
+  genres?: string[]
+  onClick: () => void
 }
 
-export function MediaCard({ title, type, status, rating, coverUrl, onClick }: MediaCardProps) {
+export function MediaCard({ title, type, status, rating, coverUrl, genres, onClick }: MediaCardProps) {
   const getMediaIcon = () => {
     switch (type) {
-      case 'anime': return <Tv size={16} />;
-      case 'book': return <Book size={16} />;
-      case 'manga': return <BookOpen size={16} />;
-      case 'series': return <Film size={16} />;
+      case 'anime': return <Tv size={16} />
+      case 'book': return <Book size={16} />
+      case 'manga': return <BookOpen size={16} />
+      case 'series': return <Film size={16} />
     }
-  };
+  }
 
   const getStatusConfig = () => {
     switch (status) {
-      case 'completed': return { label: 'Concluído', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' };
-      case 'in_progress': return { label: 'Consumindo', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' };
-      case 'planned': return { label: 'Planejado', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' };
-      case 'on_hold': return { label: 'Pausado', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' };
-      case 'dropped': return { label: 'Abandonado', color: 'bg-red-500/20 text-red-400 border-red-500/30' };
+      case 'completed': return { label: 'Concluído', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' }
+      case 'in_progress': return { label: 'Consumindo', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' }
+      case 'planned': return { label: 'Planejado', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' }
+      case 'on_hold': return { label: 'Pausado', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' }
+      case 'dropped': return { label: 'Abandonado', color: 'bg-red-500/20 text-red-400 border-red-500/30' }
     }
   };
 
   const renderStars = () => {
-    if (rating === null) {
-      return <span className="text-sm text-slate-500 italic">Não avaliado</span>;
-    }
+    if (rating === null) return <span className="text-sm text-slate-500 italic">Não avaliado</span>    
 
     return (
       <div className="flex gap-1">
@@ -49,8 +48,8 @@ export function MediaCard({ title, type, status, rating, coverUrl, onClick }: Me
           />
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   const statusConfig = getStatusConfig();
 
@@ -81,10 +80,30 @@ export function MediaCard({ title, type, status, rating, coverUrl, onClick }: Me
           {title}
         </h3>
         
-        <div className="mt-auto">
+        <div className="mt-auto flex flex-col gap-3">
+          {/* Renderização das Tags de Gêneros */}
+          {genres && genres.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {/* Pegamos no máximo os 2 primeiros gêneros para não quebrar o layout */}
+              {genres.slice(0, 2).map((genre, index) => (
+                <span 
+                  key={index} 
+                  className="px-2 py-0.5 bg-slate-700/50 text-slate-300 text-[11px] font-medium rounded-full border border-slate-600/50"
+                >
+                  {genre}
+                </span>
+              ))}
+              {/* Se tiver mais de 2, mostra um +X */}
+              {genres.length > 2 && (
+                <span className="px-2 py-0.5 bg-slate-700/30 text-slate-400 text-[11px] font-medium rounded-full border border-slate-700">
+                  +{genres.length - 2}
+                </span>
+              )}
+            </div>
+          )}
           {renderStars()}
         </div>
       </div>
     </div>
-  );
+  )
 }

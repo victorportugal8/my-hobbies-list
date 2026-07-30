@@ -50,33 +50,47 @@ export function DetailsModal({ item, onClose }: DetailsModalProps) {
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-200"
         onClick={onClose}
         >
-        {/* Caixa do Modal */}
-        <div 
-            className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-200"
-            onClick={handleModalClick}
-        >
-            {/* Capa Lateral */}
-            <div className="md:w-2/5 h-64 md:h-auto bg-slate-800">
-            <img src={item.coverUrl} alt={item.title} className="w-full h-full object-cover" />
-            </div>
-
-            {/* Conteúdo */}
-            <div className="p-6 md:w-3/5 flex flex-col relative">
-            <button 
-                onClick={onClose}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-full transition-colors"
+            {/* Caixa do Modal */}
+            <div 
+                className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-200"
+                onClick={handleModalClick}
             >
-                <X size={20} />
-            </button>
+                {/* Capa Lateral */}
+                <div className="md:w-2/5 h-64 md:h-auto bg-slate-800">
+                <img src={item.coverUrl} alt={item.title} className="w-full h-full object-cover" />
+                </div>
 
-            <h2 className="text-2xl font-bold text-white mb-6 pr-10">{item.title}</h2>
-            
-            <div className="mb-6">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Detalhes da Obra</h3>
-                {renderSpecificDetails()}
+                {/* Conteúdo */}
+                <div className="p-6 md:w-3/5 flex flex-col relative">
+                    <button 
+                        onClick={onClose}
+                        className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-full transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+
+                    <h2 className="text-2xl font-bold text-white mb-6 pr-10">{item.title}</h2>
+
+                    {/* Adicionando os gêneros aqui */}
+                    {item.genres && item.genres.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-6">
+                        {item.genres.map((genre, index) => (
+                            <span 
+                            key={index} 
+                            className="px-2.5 py-1 bg-slate-800 text-blue-400 text-xs font-semibold rounded-md border border-slate-700"
+                            >
+                            {genre}
+                            </span>
+                        ))}
+                        </div>
+                    )}
+                    
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Detalhes da Obra</h3>
+                        {renderSpecificDetails()}
+                    </div>
+                </div>
             </div>
-            </div>
-        </div>
         </div>
     )
 }

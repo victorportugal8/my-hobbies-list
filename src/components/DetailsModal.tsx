@@ -61,9 +61,37 @@ export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-                className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+                className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative"
                 onClick={handleModalClick}
             >
+                {/* BOTÕES DE AÇÃO DO MODAL */}
+                <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                
+                {/* Botão de Editar */}
+                {onEdit && (
+                    <button 
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit()
+                    }} 
+                    className="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg"
+                    title="Editar Obra"
+                    >
+                    <Edit2 size={18} />
+                    </button>
+                )}
+                    {/* Botão de Fechar */}
+                    <button 
+                        onClick={(e) => {
+                        e.stopPropagation()
+                        onClose()
+                        }} 
+                        className="text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg"
+                        title="Fechar"
+                    >
+                        <X size={18} />
+                    </button>
+                </div>
                 {/* Capa Lateral */}
                 <div className="md:w-2/5 h-64 md:h-auto bg-slate-800">
                     <img src={item.coverUrl} alt={item.title} className="w-full h-full object-cover" />
@@ -71,15 +99,7 @@ export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
 
                 {/* Conteúdo */}
                 <div className="p-6 md:w-3/5 flex flex-col relative">
-                    <button 
-                        onClick={onClose}
-                        className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-full transition-colors"
-                    >
-                        <X size={20} />
-                    </button>
-
                     <h2 className="text-2xl font-bold text-white mb-6 pr-10">{item.title}</h2>
-
                     {/* Adicionando os gêneros aqui */}
                     {item.genres && item.genres.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">
@@ -93,24 +113,12 @@ export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
                         ))}
                         </div>
                     )}
-                    
                     <div className="mb-6">
                         <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Detalhes da Obra</h3>
                         {renderSpecificDetails()}
                     </div>
                 </div>
             </motion.div>
-            {/* BLOCO DE BOTÕES SUPERIORES */}
-            <div className="absolute top-4 right-4 flex gap-2 z-10">
-            {onEdit && (
-                <button onClick={onEdit} className="text-slate-400 hover:text-white bg-slate-800/80 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg">
-                <Edit2 size={20} />
-                </button>
-            )}
-            <button onClick={onClose} className="text-slate-400 hover:text-white bg-slate-800/80 backdrop-blur-sm p-2 rounded-full transition-colors shadow-lg">
-                <X size={20} />
-            </button>
-            </div>
         </motion.div>
     )
 }

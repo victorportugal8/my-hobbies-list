@@ -3,6 +3,7 @@ import { LayoutGrid, Tv, Book, BookOpen, Film, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
+import { Dashboard } from './components/Dashboard'
 import type { MediaItem, MediaType } from './types'
 
 // Simulando o mock JSON
@@ -81,6 +82,8 @@ function App() {
           <h1 className="text-3xl font-bold tracking-tight text-white">Meu Hub de Hobbies</h1>
           <p className="text-slate-400 mt-2">Meu catálogo pessoal de mídias.</p>
         </header>
+        {/* Dashboard de Estatísticas */}
+        <Dashboard items={mockData} />
         {/* Barra de pesquisa */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
         {/* Navegação de Abas */}

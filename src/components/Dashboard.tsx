@@ -1,6 +1,26 @@
+import React from 'react'
 import { Tv, Book, BookOpen, Film, LayoutGrid, CheckCircle2 } from 'lucide-react'
 import type { MediaItem } from '../types'
 
+interface StatCardProps {
+  title: string
+  count: number
+  icon: React.ElementType
+  colorClass: string
+}
+
+// Component para renderizar os cards do dashboard
+const StatCard = ({ title, count, icon: Icon, colorClass }: StatCardProps) => (
+    <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 flex items-center justify-between">
+        <div>
+            <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
+            <p className="text-2xl font-bold text-white">{count}</p>
+        </div>
+        <div className={`p-3 rounded-lg ${colorClass}`}>
+            <Icon size={20} />
+        </div>
+    </div>
+)
 interface DashboardProps {
   items: MediaItem[]
 }
@@ -15,18 +35,6 @@ export function Dashboard({ items }: DashboardProps) {
         manga: items.filter(item => item.type === 'manga').length,
         series: items.filter(item => item.type === 'series').length,
     }
-    // Component para renderizar os cards do dashboard
-    const StatCard = ({ title, count, icon: Icon, colorClass }: { title: string, count: number, icon: any, colorClass: string }) => (
-        <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 flex items-center justify-between">
-            <div>
-                <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
-                <p className="text-2xl font-bold text-white">{count}</p>
-            </div>
-            <div className={`p-3 rounded-lg ${colorClass}`}>
-                <Icon size={20} />
-            </div>
-        </div>
-    )
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <StatCard 

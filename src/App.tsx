@@ -59,20 +59,42 @@ import type { MediaItem, MediaType } from './types'
     { id: 'series', label: 'Séries', icon: Film },
   ] as const
   type TabType = MediaType | 'all'
+  type SortOption = 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null)
-  //Lógica do filtro
+  // Estado da ordenação (Padrão: A-Z)
+  const [sortBy, setSortBy] = useState<SortOption>('title-asc')
+  // Lógica de Filtragem e Ordenação
   const filteredData = useMemo(() => {
-    return mockData.filter((item) => {
+    // Filtrando as abas e a busca
+    const result = mockData.filter((item) => {
       const matchesTab = activeTab === 'all' || item.type === activeTab;
       const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
-      
       return matchesTab && matchesSearch;
     })
-  }, [activeTab, searchQuery])
+    // Ordenando o que sobrou
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'title-asc':
+          return a.title.localeCompare(b.title);
+        case 'title-desc':
+          return b.title.localeCompare(a.title);
+        case 'rating-desc':
+          // Se não tiver nota (null), joga para o final assumindo nota -1
+          return (b.rating ?? -1) - (a.rating ?? -1);
+        case 'rating-asc':
+          // Se não tiver nota (null), joga para o final assumindo nota 999
+          return (a.rating ?? 999) - (b.rating ?? 999);
+        default:
+          return 0;
+      }
+    });
+
+    return result
+  }, [activeTab, searchQuery, sortBy])
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-8">
@@ -108,16 +130,33 @@ function App() {
               );
             })}
           </div>
-          {/* Input de Busca */}
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input
-              type="text"
-              placeholder="Buscar título..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-            />
+          {/* Agrupamento da Busca e Ordenação */}
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+            
+            {/* Input de Busca */}
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input
+                type="text"
+                placeholder="Buscar título..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
+              />
+            </div>
+
+            {/* Select de Ordenação */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500 transition-all cursor-pointer hover:bg-slate-800"
+            >
+              <option value="title-asc">A-Z</option>
+              <option value="title-desc">Z-A</option>
+              <option value="rating-desc">Maior Nota</option>
+              <option value="rating-asc">Menor Nota</option>
+            </select>
+            
           </div>
         </div>
         {/* Grid responsivo: 2 colunas mobile, 3 tablet, 4 desktop */}

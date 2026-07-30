@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { LayoutGrid, Tv, Book, BookOpen, Film, Search, Loader2, Plus } from 'lucide-react'
+import { LayoutGrid, Tv, Book, BookOpen, Film, Search, Loader2, Plus, Lock, LogOut } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
@@ -7,6 +7,8 @@ import { Dashboard } from './components/Dashboard'
 import type { MediaItem, MediaType } from './types'
 import { supabase } from './lib/supabase'
 import { AddMediaModal } from './components/AddMediaModal'
+import { LoginModal } from './components/LoginModal'
+import type { Session } from '@supabase/supabase-js'
 
 //Configuração das abas de filtro
 const TABS = [
@@ -29,6 +31,8 @@ function App() {
   // Estados dos Dados
   const [items, setItems] = useState<MediaItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [session, setSession] = useState<Session | null>(null)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   // Busca os dados na nuvem
   useEffect(() => {
     async function fetchMedias() {
@@ -40,7 +44,7 @@ function App() {
 
         if (error) throw error
         
-        // Se deu certo, salva no estado (forçando o tipo para o TypeScript não reclamar)
+        // Se deu certo, salva no estado
         if (data) setItems(data as MediaItem[])
       } catch (error) {
         console.error("Erro ao buscar dados do Supabase:", error)
@@ -49,6 +53,16 @@ function App() {
       }
     }
     fetchMedias()
+
+    // Verificação de login
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+    // Observa mudanças na sessão
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   // Lógica de Filtragem e Ordenação
@@ -100,13 +114,34 @@ function App() {
             <p className="text-slate-400">Meu catálogo pessoal de mídias.</p>
           </div>
           
-          <button 
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-blue-500/20"
-          >
-            <Plus size={20} />
-            Nova Obra
-          </button>
+          <div className="flex gap-2">
+            {session ? (
+              <>
+                <button 
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-blue-500/20"
+                >
+                  <Plus size={20} />
+                  Nova Obra
+                </button>
+                <button 
+                  onClick={() => supabase.auth.signOut()}
+                  className="flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white px-3 rounded-xl transition-all"
+                  title="Sair"
+                >
+                  <LogOut size={18} />
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={() => setIsLoginModalOpen(true)}
+                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-2.5 rounded-xl font-medium transition-all"
+              >
+                <Lock size={16} />
+                Admin
+              </button>
+            )}
+          </div>
         </header>
         {/* Dashboard de Estatísticas */}
         <Dashboard items={items} />
@@ -115,8 +150,8 @@ function App() {
         {/* Navegação de Abas */}
           <div className="flex w-full md:w-auto gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
             {TABS.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
+              const Icon = tab.icon
+              const isActive = activeTab === tab.id
               
               return (
                 <button
@@ -209,7 +244,7 @@ function App() {
             onClose={() => setSelectedItem(null)} 
           />
         )}
-        {isAddModalOpen && (
+        {isAddModalOpen && session && (
           <AddMediaModal 
             onClose={() => setIsAddModalOpen(false)}
             onSuccess={(newItem) => {
@@ -217,6 +252,10 @@ function App() {
               setItems(prevItems => [newItem, ...prevItems])
             }}
           />
+        )}
+        {/* Modal de Login */}
+        {isLoginModalOpen && (
+          <LoginModal onClose={() => setIsLoginModalOpen(false)} />
         )}
       </AnimatePresence>
     </div>

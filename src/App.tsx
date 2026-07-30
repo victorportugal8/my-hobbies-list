@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
-import { LayoutGrid, Tv, Book, BookOpen, Film, Search, Loader2 } from 'lucide-react'
+import { LayoutGrid, Tv, Book, BookOpen, Film, Search, Loader2, Plus } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
 import { Dashboard } from './components/Dashboard'
 import type { MediaItem, MediaType } from './types'
 import { supabase } from './lib/supabase'
+import { AddMediaModal } from './components/AddMediaModal'
 
 //Configuração das abas de filtro
 const TABS = [
@@ -24,6 +25,7 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null)
   // Estado da ordenação (Padrão: A-Z)
   const [sortBy, setSortBy] = useState<SortOption>('title-asc')
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   // Estados dos Dados
   const [items, setItems] = useState<MediaItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -92,9 +94,19 @@ function App() {
     <div className="min-h-screen bg-slate-900 text-slate-100 p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/*Cabeçalho*/}
-        <header>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Meu Hub de Hobbies</h1>
-          <p className="text-slate-400 mt-2">Meu catálogo pessoal de mídias.</p>
+        <header className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Meu Hub de Hobbies</h1>
+            <p className="text-slate-400">Meu catálogo pessoal de mídias.</p>
+          </div>
+          
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg shadow-blue-500/20"
+          >
+            <Plus size={20} />
+            Nova Obra
+          </button>
         </header>
         {/* Dashboard de Estatísticas */}
         <Dashboard items={items} />
@@ -195,6 +207,15 @@ function App() {
           <DetailsModal 
             item={selectedItem} 
             onClose={() => setSelectedItem(null)} 
+          />
+        )}
+        {isAddModalOpen && (
+          <AddMediaModal 
+            onClose={() => setIsAddModalOpen(false)}
+            onSuccess={(newItem) => {
+              // Adiciona o item novo no início do estado local sem precisar recarregar a página
+              setItems(prevItems => [newItem, ...prevItems])
+            }}
           />
         )}
       </AnimatePresence>

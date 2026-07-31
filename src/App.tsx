@@ -11,14 +11,6 @@ import { LoginModal } from './components/LoginModal'
 import { EditMediaModal } from './components/EditMediaModal'
 import type { Session } from '@supabase/supabase-js'
 
-//Configuração das abas de filtro
-const TABS = [
-  { id: 'all', label: 'Todos', icon: LayoutGrid },
-  { id: 'anime', label: 'Animes', icon: Tv },
-  { id: 'book', label: 'Livros', icon: Book },
-  { id: 'manga', label: 'Mangás', icon: BookOpen },
-  { id: 'series', label: 'Séries', icon: Film },
-] as const
 type TabType = MediaType | 'all'
 type SortOption = 'title-asc' | 'title-desc' | 'rating-desc' | 'rating-asc'
 
@@ -28,6 +20,7 @@ function App() {
   const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null)
   // Estado da ordenação (Padrão: A-Z)
   const [sortBy, setSortBy] = useState<SortOption>('title-asc')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   // Estados dos Dados
   const [items, setItems] = useState<MediaItem[]>([])
@@ -71,9 +64,10 @@ function App() {
   const filteredData = useMemo(() => {
     // Filtrando as abas e a busca
     const result = items.filter((item) => {
-      const matchesTab = activeTab === 'all' || item.type === activeTab;
-      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesTab && matchesSearch;
+      const matchesTab = activeTab === 'all' || item.type === activeTab
+      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      const matchesStatus = statusFilter === 'all' || item.status === statusFilter
+      return matchesTab && matchesSearch && matchesStatus
     })
     // Ordenando o que sobrou
     result.sort((a, b) => {
@@ -94,7 +88,7 @@ function App() {
     });
 
     return result
-  }, [activeTab, searchQuery, sortBy, items])
+  }, [activeTab, searchQuery, sortBy, statusFilter, items])
 
   // Tela de Carregamento
   if (isLoading) {
@@ -147,58 +141,70 @@ function App() {
         </header>
         {/* Dashboard de Estatísticas */}
         <Dashboard items={items} />
-        {/* Barra de pesquisa */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
-        {/* Navegação de Abas */}
-          <div className="flex w-full md:w-auto gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-            {TABS.map((tab) => {
-              const Icon = tab.icon
-              const isActive = activeTab === tab.id
-              
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as TabType)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 whitespace-nowrap ${
-                    isActive 
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' 
-                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
-                  }`}
-                >
-                  <Icon size={18} />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-          {/* Agrupamento da Busca e Ordenação */}
-          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-3">
+        {/* ÁREA DE CONTROLES: Abas e Filtros */}
+          <div className="flex flex-col gap-5 mb-8">
             
-            {/* Input de Busca */}
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                type="text"
-                placeholder="Buscar título..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all"
-              />
+            {/* LINHA 1: Abas de Tipo (Scroll horizontal suave apenas em telas muito pequenas) */}
+            <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+              <button onClick={() => setActiveTab('all')} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+                <LayoutGrid size={18} /> Todos
+              </button>
+              <button onClick={() => setActiveTab('anime')} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'anime' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+                <Tv size={18} /> Animes
+              </button>
+              <button onClick={() => setActiveTab('book')} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'book' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+                <Book size={18} /> Livros
+              </button>
+              <button onClick={() => setActiveTab('manga')} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'manga' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+                <BookOpen size={18} /> Mangás
+              </button>
+              <button onClick={() => setActiveTab('series')} className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${activeTab === 'series' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'}`}>
+                <Film size={18} /> Séries
+              </button>
             </div>
 
-            {/* Select de Ordenação */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500 transition-all cursor-pointer hover:bg-slate-800"
-            >
-              <option value="title-asc">A-Z</option>
-              <option value="title-desc">Z-A</option>
-              <option value="rating-desc">Maior Nota</option>
-              <option value="rating-asc">Menor Nota</option>
-            </select>
-            
-          </div>
+            {/* LINHA 2: Barra de Filtros (Busca + Status + Ordenação) */}
+            <div className="flex flex-col xl:flex-row gap-3 xl:items-center justify-between bg-slate-800/30 p-3 rounded-2xl border border-slate-700/50">
+              
+              {/* Campo de Busca (Ocupa o espaço à esquerda) */}
+              <div className="relative w-full xl:w-96">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Buscar obras..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-all placeholder-slate-500"
+                />
+              </div>
+              
+              {/* Selects de Filtro e Ordem (Agrupados à direita) */}
+              <div className="flex flex-col sm:flex-row w-full xl:w-auto gap-3">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full sm:w-auto bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500 transition-all cursor-pointer hover:bg-slate-800"
+                >
+                  <option value="all">Todos os Status</option>
+                  <option value="planned">Assistir / Ler</option>
+                  <option value="in_progress">Assistindo / Lendo</option>
+                  <option value="completed">Concluído</option>
+                  <option value="on_hold">Pausado</option>
+                  <option value="dropped">Abandonado</option>
+                </select>
+
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortOption)}
+                  className="w-full sm:w-auto bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500 transition-all cursor-pointer hover:bg-slate-800"
+                >
+                  <option value="title-asc">A-Z</option>
+                  <option value="title-desc">Z-A</option>
+                  <option value="rating-desc">Maior Nota</option>
+                  <option value="rating-asc">Menor Nota</option>
+                </select>
+              </div>
+            </div>
         </div>
         {/* Grid responsivo: 2 colunas mobile, 3 tablet, 4 desktop */}
         {filteredData.length > 0 ? (

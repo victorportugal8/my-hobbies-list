@@ -159,9 +159,17 @@ export function AddMediaModal({ onClose, onSuccess }: AddMediaModalProps) {
               </div>
               <div>
                 <label className="text-sm text-slate-400 mb-1 block">Status</label>
-                <select value={formData.status} onChange={(e) => setFormData({...formData, status: e.target.value})} className={inputClass}>
-                  <option value="planned">Planejado</option>
-                  <option value="in_progress">Consumindo</option>
+                <select 
+                  value={formData.status} 
+                  onChange={(e) => setFormData({...formData, status: e.target.value as MediaItem['status']})} 
+                  className={inputClass}
+                >
+                  <option value="planned">
+                    {formData.type === 'anime' || formData.type === 'series' ? 'Assistir' : 'Ler'}
+                  </option>
+                  <option value="in_progress">
+                    {formData.type === 'anime' || formData.type === 'series' ? 'Assistindo' : 'Lendo'}
+                  </option>
                   <option value="completed">Concluído</option>
                   <option value="on_hold">Pausado</option>
                   <option value="dropped">Abandonado</option>

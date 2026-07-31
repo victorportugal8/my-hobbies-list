@@ -22,14 +22,15 @@ export function MediaCard({ title, type, status, rating, coverUrl, genres, onCli
   }
 
   const getStatusConfig = () => {
+    const isWatchable = type === 'anime' || type === 'series'
     switch (status) {
       case 'completed': return { label: 'Concluído', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' }
-      case 'in_progress': return { label: 'Consumindo', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' }
-      case 'planned': return { label: 'Planejado', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' }
+      case 'in_progress': return { label: isWatchable ? 'Assistindo' : 'Lendo', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' }
+      case 'planned': return { label: isWatchable ? 'Assistir' : 'Ler', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' }
       case 'on_hold': return { label: 'Pausado', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' }
       case 'dropped': return { label: 'Abandonado', color: 'bg-red-500/20 text-red-400 border-red-500/30' }
     }
-  };
+  }
 
   const renderStars = () => {
     if (rating === null) return <span className="text-sm text-slate-500 italic">Não avaliado</span>    

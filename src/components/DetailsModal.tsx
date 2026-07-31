@@ -9,8 +9,32 @@ interface DetailsModalProps {
 }
 
 export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
-    // Impede que o clique dentro do modal feche ele (event bubbling)
+    // Impede que o clique dentro do modal feche ele
     const handleModalClick = (e: React.MouseEvent) => e.stopPropagation()
+    
+    // Função para pegar o texto do status baseado no tipo
+    const getStatusText = (status: string, type: string) => {
+        const isWatchable = type === 'anime' || type === 'series'
+        switch (status) {
+            case 'planned': return isWatchable ? 'Assistir' : 'Ler'
+            case 'in_progress': return isWatchable ? 'Assistindo' : 'Lendo'
+            case 'completed': return 'Concluído'
+            case 'on_hold': return 'Pausado'
+            case 'dropped': return 'Abandonado'
+            default: return status
+        }
+    }
+    // Função para pegar a cor do status
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'completed': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+            case 'in_progress': return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+            case 'planned': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+            case 'on_hold': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+            case 'dropped': return 'bg-red-500/20 text-red-400 border-red-500/30'
+            default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30'
+        }
+    }
 
     // Função que decide o que renderizar baseado no TIPO da mídia
     const renderSpecificDetails = () => {
@@ -100,6 +124,12 @@ export function DetailsModal({ item, onClose, onEdit }: DetailsModalProps) {
                 {/* Conteúdo */}
                 <div className="p-6 md:w-3/5 flex flex-col relative">
                     <h2 className="text-2xl font-bold text-white mb-6 pr-10">{item.title}</h2>
+                    {/* Tag renderizando o status dinâmico logo abaixo do título */}
+                    <div className="mb-4">
+                        <span className={`px-3 py-1 rounded-md text-xs font-semibold border ${getStatusColor(item.status)}`}>
+                            {getStatusText(item.status, item.type)}
+                        </span>
+                    </div>
                     {/* Adicionando os gêneros aqui */}
                     {item.genres && item.genres.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-6">

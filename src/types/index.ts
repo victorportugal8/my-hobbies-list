@@ -5,6 +5,7 @@ export type MediaStatus = 'completed' | 'in_progress' | 'planned' | 'on_hold' | 
 export interface BaseMedia{
     id: string
     title: string
+    type: MediaType
     status: MediaStatus
     rating: number | null
     favorite?: boolean

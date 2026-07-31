@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tv, Book, BookOpen, Film, LayoutGrid, CheckCircle2, PlayCircle, Calendar, PauseCircle, XCircle } from 'lucide-react'
-import type { MediaItem } from '../types'
+import type { MediaItem, MediaStatus } from '../types'
 
 interface StatCardProps {
   title: string
@@ -29,7 +29,7 @@ const StatCard = ({ title, count, icon: Icon, colorClass, onClick }: StatCardPro
 
 interface DashboardProps {
   items: MediaItem[]
-  onStatusClick: (status: MediaItem['status']) => void
+  onStatusClick: (status: MediaStatus) => void
 }
 
 export function Dashboard({ items, onStatusClick }: DashboardProps) {

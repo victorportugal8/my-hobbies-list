@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { MediaCard } from './components/MediaCard'
 import { DetailsModal } from './components/DetailsModal'
 import { Dashboard } from './components/Dashboard'
-import type { MediaItem, MediaType } from './types'
+import type { MediaItem, MediaType, MediaStatus } from './types'
 import { supabase } from './lib/supabase'
 import { AddMediaModal } from './components/AddMediaModal'
 import { LoginModal } from './components/LoginModal'
@@ -29,7 +29,7 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [summaryStatus, setSummaryStatus] = useState<MediaItem['status'] | null>(null)
+  const [summaryStatus, setSummaryStatus] = useState<MediaStatus | null>(null)
   // Busca os dados na nuvem
   useEffect(() => {
     async function fetchMedias() {

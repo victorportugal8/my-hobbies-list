@@ -9,6 +9,7 @@ import { supabase } from './lib/supabase'
 import { AddMediaModal } from './components/AddMediaModal'
 import { LoginModal } from './components/LoginModal'
 import { EditMediaModal } from './components/EditMediaModal'
+import { StatusSummaryModal } from './components/StatusSummaryModal'
 import type { Session } from '@supabase/supabase-js'
 
 type TabType = MediaType | 'all'
@@ -28,6 +29,7 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [summaryStatus, setSummaryStatus] = useState<MediaItem['status'] | null>(null)
   // Busca os dados na nuvem
   useEffect(() => {
     async function fetchMedias() {
@@ -140,7 +142,7 @@ function App() {
           </div>
         </header>
         {/* Dashboard de Estatísticas */}
-        <Dashboard items={items} />
+        <Dashboard items={items} onStatusClick={setSummaryStatus} />
         {/* ÁREA DE CONTROLES: Abas e Filtros */}
           <div className="flex flex-col gap-5 mb-8">
             
@@ -287,6 +289,14 @@ function App() {
         {/* Modal de Login */}
         {isLoginModalOpen && (
           <LoginModal onClose={() => setIsLoginModalOpen(false)} />
+        )}
+        {/* Modal de Resumo de Status */}
+        {summaryStatus && (
+          <StatusSummaryModal 
+            status={summaryStatus} 
+            items={items} 
+            onClose={() => setSummaryStatus(null)} 
+          />
         )}
       </AnimatePresence>
     </div>

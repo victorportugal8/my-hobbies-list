@@ -3,14 +3,20 @@ import { Tv, Book, BookOpen, Film, LayoutGrid, CheckCircle2, PlayCircle, Calenda
 import type { MediaItem } from '../types'
 
 interface StatCardProps {
-  title: string;
-  count: number;
-  icon: React.ElementType;
-  colorClass: string;
+  title: string
+  count: number
+  icon: React.ElementType
+  colorClass: string
+  onClick?: () => void
 }
 
-const StatCard = ({ title, count, icon: Icon, colorClass }: StatCardProps) => (
-  <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 flex items-center justify-between">
+const StatCard = ({ title, count, icon: Icon, colorClass, onClick }: StatCardProps) => (
+  <div 
+    onClick={onClick}
+    className={`bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 flex items-center justify-between ${
+      onClick ? 'cursor-pointer hover:bg-slate-700 hover:border-slate-500 hover:-translate-y-1 hover:shadow-lg transition-all duration-300' : ''
+    }`}
+  >
     <div>
       <p className="text-slate-400 text-sm font-medium mb-1">{title}</p>
       <p className="text-2xl font-bold text-white">{count}</p>
@@ -23,9 +29,10 @@ const StatCard = ({ title, count, icon: Icon, colorClass }: StatCardProps) => (
 
 interface DashboardProps {
   items: MediaItem[]
+  onStatusClick: (status: MediaItem['status']) => void
 }
 
-export function Dashboard({ items }: DashboardProps) {
+export function Dashboard({ items, onStatusClick }: DashboardProps) {
   // Calculando todos os dados necessários
   const stats = {
     total: items.length,
@@ -62,11 +69,11 @@ export function Dashboard({ items }: DashboardProps) {
       <div>
         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Status Atual</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <StatCard title="Concluídos" count={stats.completed} icon={CheckCircle2} colorClass="bg-emerald-500/20 text-emerald-400" />
-          <StatCard title="Consumindo" count={stats.in_progress} icon={PlayCircle} colorClass="bg-blue-500/20 text-blue-400" />
-          <StatCard title="Planejados" count={stats.planned} icon={Calendar} colorClass="bg-yellow-500/20 text-yellow-400" />
-          <StatCard title="Pausados" count={stats.on_hold} icon={PauseCircle} colorClass="bg-orange-500/20 text-orange-400" />
-          <StatCard title="Abandonados" count={stats.dropped} icon={XCircle} colorClass="bg-red-500/20 text-red-400" />
+          <StatCard title="Concluídos" count={stats.completed} icon={CheckCircle2} colorClass="bg-emerald-500/20 text-emerald-400" onClick={() => onStatusClick('completed')} />
+          <StatCard title="Consumindo" count={stats.in_progress} icon={PlayCircle} colorClass="bg-blue-500/20 text-blue-400" onClick={() => onStatusClick('in_progress')} />
+          <StatCard title="Planejados" count={stats.planned} icon={Calendar} colorClass="bg-yellow-500/20 text-yellow-400" onClick={() => onStatusClick('planned')} />
+          <StatCard title="Pausados" count={stats.on_hold} icon={PauseCircle} colorClass="bg-orange-500/20 text-orange-400" onClick={() => onStatusClick('on_hold')} />
+          <StatCard title="Abandonados" count={stats.dropped} icon={XCircle} colorClass="bg-red-500/20 text-red-400" onClick={() => onStatusClick('dropped')} />
         </div>
       </div>
 
